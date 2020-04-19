@@ -1,0 +1,29 @@
+version: '3.6'
+services:
+
+  # PostgreSQL
+  db:
+    hostname: postgres
+    image: postgres:9.6
+    restart: 'always'
+    environment:
+      POSTGRES_USER: 'whisbi'
+      POSTGRES_PASSWORD: 'whisbi'
+      POSTGRES_DB: 'whisbi'
+      PGDATA: '/var/lib/postgresql/data/pgdata'
+    volumes:
+     - 'whisbi-dev-postgres:/var/lib/postgresql/data'
+    ports:
+      - "15432:5432"
+    networks:
+      - whisbi-dev-net
+
+# Network
+networks:
+  whisbi-dev-net:
+    driver: bridge
+
+# Volumes - docker volume create --driver local whisbi-dev-postgres
+volumes:
+  whisbi-dev-postgres:
+    external: true
