@@ -54,12 +54,12 @@ run: ; $(info $(M) Running dev build (on the fly) ...) @ ## Run intermediate bui
 	$Q $(GO) run ./cmd/$(FILES) --env env.json
 
 .PHONY: run-build
-run-build: ; $(info $(M) Running dev build (compiled) ...) @ ## Run build
+run-build: build | ; $(info $(M) Running dev build (compiled) ...) @ ## Run build
 	$Q $(BIN)/$(basename $(MODULE)) --env env.json
 
 .PHONY: install
 install: ; $(info $(M) Installing dependencies...)	@ ## Install project dependencies
-	$Q $(GO) mod download
+	$Q $(GO) mod vendor
 
 # -- Testing
 .PHONY: test-unit
