@@ -10,22 +10,28 @@ import (
 )
 
 type config struct {
-	Debug bool
+	Debug  bool
+	Server struct {
+		Address string
+	}
 }
 
 var (
 	// Config instance
-	Config config
-	envArg string
+	Config  config
+	envPath string
 )
+
+func init() {
+
+	flag.StringVar(&envPath, "env", "", "Environment file")
+	flag.Parse()
+}
 
 // Read config file
 func Read() {
 
-	flag.StringVar(&envArg, "env", "", "Environment file")
-	flag.Parse()
-
-	viper.SetConfigFile(envArg)
+	viper.SetConfigFile(envPath)
 	viper.AutomaticEnv()
 
 	err := viper.ReadInConfig()
