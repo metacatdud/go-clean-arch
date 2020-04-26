@@ -1,11 +1,18 @@
 package controller
 
 import (
+	"fmt"
 	"math/big"
 	"net/http"
+
+	"github.com/jinzhu/gorm"
 )
 
 type userController struct {
+	db *gorm.DB
+}
+
+type dummyData struct {
 	Name  string   `json:"name"`
 	Count int      `json:"count"`
 	Fib   *big.Int `json:"fibonacci"`
@@ -16,17 +23,34 @@ type UserController interface {
 }
 
 func (uc *userController) Get(c Context) error {
-	u := &userController{
+	u := &dummyData{
 		Name:  "Test",
 		Count: 10,
-		Fib:   fib(40),
+		Fib:   fib(0),
 	}
+
+	// uc.db.Exec(`INSERT INTO test (str, raw_data) VALUES ("x", "b")`)
+
+	// Scan
+	type Result struct {
+		Str     string
+		RawData string
+	}
+
+	var result Result
+	uc.db.Raw("SELECT * FROM test WHERE str = ?", "x").Scan(&result)
+	// res := uc.db.Exec(`SELECT * FROM test WHERE str=?`, "x").Row()
+
+	fmt.Printf("%+v", result)
+
 	return c.JSON(http.StatusOK, u)
 }
 
-func NewUserController() UserController {
+func NewUserController(db *gorm.DB) UserController {
 
-	return &userController{}
+	return &userController{
+		db: db,
+	}
 }
 
 func fib(n int) *big.Int {
